@@ -1,0 +1,164 @@
+{
+	"info": {
+		"_postman_id": "16047db8-d3ea-4bbb-98fa-0fcfd2689853",
+		"name": "project work - bootcamp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://api-dev.andonix.com/api/v2/login/authorization",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b41ab44-d135-4efb-a2ca-c3abbe2e300a",
+						"exec": [
+							"var jsonData = {};",
+							"jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Set accessToken to enviroment variable\", function(){",
+							"    pm.environment.set(\"accessToken\", jsonData.data);        ",
+							"});",
+							"",
+							"",
+							"// json schema validators",
+							"// https://jsonschemalint.com/#/version/draft-07/markup/json",
+							"// https://www.jsonschemavalidator.net/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api-dev.andonix.com/api/v2/login/authorization",
+					"protocol": "https",
+					"host": [
+						"api-dev",
+						"andonix",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"login",
+						"authorization"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api-dev.andonix.com/api/v2/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d4ce90d4-b69f-4d9f-9512-53bfc9cff004",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"accessTokenIdp\", jsonData.data.accessTokenIdentityProvider); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "username",
+						"value": "salesforce@ptiqcs.com"
+					},
+					{
+						"key": "password",
+						"value": "tripi123."
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api-dev.andonix.com/api/v2/login",
+					"protocol": "https",
+					"host": [
+						"api-dev",
+						"andonix",
+						"com"
+					],
+					"path": [
+						"api",
+						"v2",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://dev-reports-services.us-west-2.elasticbeanstalk.com/operation/18bd8d24-cf26-6896-335b-82836df33223?q={\"workOrderId\": \"18bd8d24-cf26-6896-335b-82836df33223\", \"userName\": \"Brandon Samuel Martinez Arevalos\"}&project={}&limit=5&skip=0",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accesstokenidp",
+						"value": "{{accessTokenIdp}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://dev-reports-services.us-west-2.elasticbeanstalk.com/operation/18bd8d24-cf26-6896-335b-82836df33223?q={\"workOrderId\": \"18bd8d24-cf26-6896-335b-82836df33223\", \"userName\": \"Brandon Samuel Martinez Arevalos\"}&project={}&limit=5&skip=0",
+					"protocol": "http",
+					"host": [
+						"dev-reports-services",
+						"us-west-2",
+						"elasticbeanstalk",
+						"com"
+					],
+					"path": [
+						"operation",
+						"18bd8d24-cf26-6896-335b-82836df33223"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "{\"workOrderId\": \"18bd8d24-cf26-6896-335b-82836df33223\", \"userName\": \"Brandon Samuel Martinez Arevalos\"}"
+						},
+						{
+							"key": "project",
+							"value": "{}"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "skip",
+							"value": "0"
+						},
+						{
+							"key": "orient",
+							"value": "records",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
