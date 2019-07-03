@@ -160,5 +160,57 @@ def workorders():
     }
     return jsonify(result)
 
+
+@app.route("/api/eroute/workorders")
+def eroute_workorders():
+
+    _pipeline = [
+            {
+                '$match': {
+                    # **match
+                    # "companyId"
+                }
+            }, 
+            {
+                '$sort': {
+                    'createdDate': -1
+                }
+            }, 
+            {
+                '$skip': 0
+            }, 
+            {
+                '$limit': 50
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    # 'id': 1,
+                    'plantId': 1,
+                    # 'businessUnitId': 1,
+                    # 'status': 1,
+                    'name': 1
+                    # 'summary': 1,
+                    # 'createdDate': 1
+                    # 'logs': 1
+                }
+            }
+            
+        ]
+
+    workOrdersDBDocs = db.workorders.aggregate(_pipeline)
+    # for x in workOrdersDBDocs:
+        # print(x)
+
+    # df = pd.DataFrame(list(workOrdersDBDocs))
+    # print(df.head(5))
+    df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
+    # df = df.set_index('id')
+    result = {
+        'data':  json.loads(df.to_json(orient='records'))
+        # 'data':  json.loads(df.to_json()),
+    }
+    return jsonify(result)
+
 if __name__ == "__main__":
     app.run()
