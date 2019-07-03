@@ -10,22 +10,20 @@ from sqlalchemy import create_engine
 
 from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
+from pymongo import MongoClient
+import json
+from flask import jsonify
+
 
 app = Flask(__name__)
-
 
 #################################################
 # Database Setup
 #################################################
 
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/bellybutton.sqlite"
-# db = SQLAlchemy(app)
-
-# Base = automap_base()
-# Base.prepare(db.engine, reflect=True)
-
-# Samples_Metadata = Base.classes.sample_metadata
-# Samples = Base.classes.samples
+connectionString = "mongodb://dbAdmin:Vol8e3v5XLGYrwTK@cluster0-shard-00-00-0dend.mongodb.net:27017,cluster0-shard-00-01-0dend.mongodb.net:27017,cluster0-shard-00-02-0dend.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true"
+dbClient = MongoClient(connectionString)
+db = dbClient["84ad9547-499c-40e3-a02e-fcf4f8714871"]
 
 
 @app.route("/")
@@ -34,69 +32,133 @@ def index():
     return render_template("index.html")
 
 
-# @app.route("/names")
-# def names():
-#     """Return a list of sample names."""
+@app.route("/api/0/operations")
+def operations():
 
-#     # Use Pandas to perform the sql query
-#     stmt = db.session.query(Samples).statement
-#     df = pd.read_sql_query(stmt, db.session.bind)
+    _pipeline = [
+            {
+                '$match': {
+                    # **match
+                    # "companyId"
+                }
+            }, 
+            {
+                '$sort': {
+                    'createdDate': -1
+                }
+            }, 
+            {
+                '$skip': 0
+            }, 
+            {
+                '$limit': 200
+            }, 
+            {
+                '$addFields': {
+                    'op.businessUnitId.value': '$businessUnitId', 
+                    'op.plantId.value': '$plantId', 
+                    'op.workOrderId.value': '$workOrderId', 
+                    'op.userId.value': '$userId', 
+                    'op.userName.value': '$userName', 
+                    'op.createdDate.value': '$createdDate', 
+                    'op.firebaseId.value': '$firebaseId'
+                }
+            }, 
+            {
+                '$project': {
+                    'op': {
+                        '$objectToArray': '$op'
+                    }
+                }
+            }, 
+            {
+                '$project': {
+                    'op': {
+                        '$map': {
+                            'input': '$op', 
+                            'as': 'x', 
+                            'in': {
+                                'k': '$$x.k', 
+                                'v': '$$x.v.value'
+                            }
+                        }
+                    }
+                }
+            }, 
+            {
+                '$project': {
+                    'op2': {
+                        '$arrayToObject': '$op'
+                    }
+                }
+            }, 
+            {
+                '$replaceRoot': {
+                    'newRoot': '$op2'
+                }
+            }
+        ]
 
-#     # Return a list of the column names (sample names)
-#     return jsonify(list(df.columns)[2:])
+    operationsDBDocs = db.operations.aggregate(_pipeline)
+        
+    df = pd.DataFrame(list(operationsDBDocs)).fillna(0)
+    df = df.set_index('firebaseId')
+    result = {
+        'data':  json.loads(df.to_json(orient='records')),
+        'meta_data': json.loads(df.describe().to_json())
+    }
+    return jsonify(result)
 
+@app.route("/api/0/workorders")
+def workorders():
 
-# @app.route("/metadata/<sample>")
-# def sample_metadata(sample):
-#     """Return the MetaData for a given sample."""
-#     sel = [
-#         Samples_Metadata.sample,
-#         Samples_Metadata.ETHNICITY,
-#         Samples_Metadata.GENDER,
-#         Samples_Metadata.AGE,
-#         Samples_Metadata.LOCATION,
-#         Samples_Metadata.BBTYPE,
-#         Samples_Metadata.WFREQ,
-#     ]
+    _pipeline = [
+            {
+                '$match': {
+                    # **match
+                    # "companyId"
+                }
+            }, 
+            {
+                '$sort': {
+                    'createdDate': -1
+                }
+            }, 
+            {
+                '$skip': 0
+            }, 
+            {
+                '$limit': 50
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    'id': 1,
+                    'plantId': 1,
+                    'businessUnitId': 1,
+                    'status': 1,
+                    'name': 1,
+                    'summary': 1,
+                    'createdDate': 1
+                    # 'logs': 1
+                }
+            }
+            
+        ]
 
-#     results = db.session.query(*sel).filter(Samples_Metadata.sample == sample).all()
+    workOrdersDBDocs = db.workorders.aggregate(_pipeline)
+    # for x in workOrdersDBDocs:
+        # print(x)
 
-#     # Create a dictionary entry for each row of metadata information
-#     sample_metadata = {}
-#     for result in results:
-#         sample_metadata["sample"] = result[0]
-#         sample_metadata["ETHNICITY"] = result[1]
-#         sample_metadata["GENDER"] = result[2]
-#         sample_metadata["AGE"] = result[3]
-#         sample_metadata["LOCATION"] = result[4]
-#         sample_metadata["BBTYPE"] = result[5]
-#         sample_metadata["WFREQ"] = result[6]
-
-#     print(sample_metadata)
-#     return jsonify(sample_metadata)
-
-
-# @app.route("/samples/<sample>")
-# def samples(sample):
-#     """Return `otu_ids`, `otu_labels`,and `sample_values`."""
-#     stmt = db.session.query(Samples).statement
-#     df = pd.read_sql_query(stmt, db.session.bind)
-
-#     # Filter the data based on the sample number and
-#     # only keep rows with values above 1
-#     sample_data = df.loc[df[sample] > 1, ["otu_id", "otu_label", sample]]
-
-#     # Sort by sample
-#     sample_data.sort_values(by=sample, ascending=False, inplace=True)
-
-#     # Format the data to send as json
-#     data = {
-#         "otu_ids": sample_data.otu_id.values.tolist(),
-#         "sample_values": sample_data[sample].values.tolist(),
-#         "otu_labels": sample_data.otu_label.tolist(),
-#     }
-#     return jsonify(data)
-
+    # df = pd.DataFrame(list(workOrdersDBDocs))
+    # print(df.head(5))
+    df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
+    df = df.set_index('id')
+    result = {
+        'data':  json.loads(df.to_json(orient='records'))
+        # 'data':  json.loads(df.to_json()),
+    }
+    return jsonify(result)
 
 if __name__ == "__main__":
     app.run()
