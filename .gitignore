@@ -8,6 +8,8 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+myenv/
+flask project/myenv/
 build/
 develop-eggs/
 dist/
