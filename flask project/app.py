@@ -189,10 +189,15 @@ def eroute_workorders():
                     'plantId': 1,
                     # 'businessUnitId': 1,
                     # 'status': 1,
-                    'name': 1
+                    # 'name': 1
                     # 'summary': 1,
                     # 'createdDate': 1
                     # 'logs': 1
+                }
+            },
+            {
+                '$addFields': {
+                    'y': 9
                 }
             }
             
