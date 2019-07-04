@@ -15,6 +15,9 @@ authenticationInit = async () => {
 
     ascript();
     escript();
+    mscript();
+    rscript();
+    tscript();
 
     // debugger;
 
