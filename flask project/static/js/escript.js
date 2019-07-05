@@ -4,47 +4,47 @@ escript = async (accesstoken, accesstokenidp) => {
     const operations = await d3.json("/edroute/operations");
     const plants = await d3.json("/edroute/plants");
 
-console.log(plants)
-// var result = _.unionBy(workOrders.data, plants.data, "_id");
+var grafica1 = _.map(workOrders.data, function(item) {
+    return _.assign(item, _.find(plants.data, ['_id', item._id]));
+});
 
-// console.log(result);
 
+    var xValue = [];
+     var yValue = [];
 
-//      var xValue = [];
-//      var yValue = [];
-
-//      for (var i = 0; i < workOrders.data.length; i++) {
-//             xValue.push(workOrders.data[i]._id);
-//             yValue.push(workOrders.data[i].count);
-//     }
+     for (var i = 0; i < grafica1.length; i++) {
+            xValue.push(grafica1[i].name);
+            yValue.push(grafica1[i].count);
+    }
    
-//     var trace1 = {
-//       x: xValue,
-//       y: yValue,
-//       type: 'bar',
-//       text: yValue.map(String),
-//       textposition: 'auto',
-//       hoverinfo: 'none',
-//       marker: {
-//         color: 'rgb(158,202,225)',
-//         opacity: 0.6,
-//         line: {
-//           color: 'rgb(8,48,107)',
-//           width: 1.5
-//         }
-//       }
-//     };
+console.log(xValue)
+console.log(yValue)
+
+    var trace1 = {
+      x: xValue,
+      y: yValue,
+      type: 'bar',
+      text: yValue.map(String),
+      textposition: 'auto',
+      hoverinfo: 'none',
+      marker: {
+        color: 'rgb(158,202,225)',
+        opacity: 0.6,
+        line: {
+          color: 'rgb(8,48,107)',
+          width: 1.5
+        }
+      }
+    };
     
-//     var data = [trace1];
+    var data = [trace1];
     
-//     var layout = {
-//       title: 'January 2013 Sales Report'
-//     };
+    var layout = {
+      title: 'Total Workoders'
+    };
     
-//     Plotly.newPlot('eddiv', data, layout);
+    Plotly.newPlot('eddiv', data, layout);
         
     
-// }
-
-
 }
+

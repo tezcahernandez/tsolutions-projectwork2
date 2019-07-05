@@ -200,12 +200,7 @@ def eroute_workorders():
                     # 'logs': 1
                 }
             },
-            {
-               "$group":{
-                   "_id":"$plantId",
-                   "count": {"$sum":1}
-               }
-            },
+
             {
                 '$addFields': {
                     'y': 9
