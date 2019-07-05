@@ -213,16 +213,10 @@ def plants():
             {
                 '$project': {
                     '_id': 0,
-                    'id': 1,
+                    '_id': '$id',
                     'name':1
                 }
             }
-            #             {
-            #    "$group":{
-            #        "_id":"$id",
-            #        "name": "$name"
-            #    }
-            #}
         ]
     
     plantsDBDocs = db.plants.aggregate(_pipeline)
