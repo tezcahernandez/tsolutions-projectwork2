@@ -116,9 +116,6 @@ def workorders():
                 '$skip': 0
             }, 
             {
-                '$limit': 50
-            },
-            {
                 '$project': {
                     '_id': 0,
                     #'id': 1,
