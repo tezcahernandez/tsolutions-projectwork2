@@ -18,7 +18,6 @@ def show():
         print(e)
         return jsonify({ "status": False, "data": [] })
 
-
 @bp.route("/operations")
 def operations():
     db = dbClient["84ad9547-499c-40e3-a02e-fcf4f8714871"]
@@ -96,53 +95,6 @@ def operations():
     }
     return jsonify(result)
 
-@bp.route("/workorders")
-def workorders():
-    db = dbClient["84ad9547-499c-40e3-a02e-fcf4f8714871"]
-
-    _pipeline = [
-            {
-                '$match': {
-                    # **match
-                    # "companyId"
-                }
-            }, 
-            {
-                '$sort': {
-                    'createdDate': -1
-                }
-            }, 
-            {
-                '$skip': 0
-            }, 
-            {
-                '$limit': 50
-            },
-            {
-                '$project': {
-                    '_id': 0,
-                    'id': 1,
-                    'plantId': 1,
-                    'businessUnitId': 1,
-                    'status': 1,
-                    'name': 1,
-                    'summary': 1,
-                    'createdDate': 1
-                    # 'logs': 1
-                }
-            }
-            
-        ]
-    
-    workOrdersDBDocs = db.workorders.aggregate(_pipeline)
-    df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
-    df = df.set_index('id')
-    result = {
-        'data':  json.loads(df.to_json(orient='records'))
-    }
-    return jsonify(result)
-
-
 @bp.route("/users")
 def user():
     db = dbClient["84ad9547-499c-40e3-a02e-fcf4f8714871"]
@@ -189,6 +141,61 @@ def user():
     }
     return jsonify(result)
 
+@bp.route("/workorders")
+def workorders():
+    db = dbClient["84ad9547-499c-40e3-a02e-fcf4f8714871"]
+
+    _pipeline = [
+            {
+                '$match': {
+                    # **match
+                    # "companyId"
+                    "plantId": {'$gte':'6bf5e954-e3ca-4aef-a624-cf061817e6c0'}
+                }
+            }, 
+            {
+                '$sort': {
+                    'plantId': -1
+                }
+            }, 
+            {
+                '$skip': 0
+            }, 
+            # {
+            #     '$limit': 50
+            # },
+            {
+                '$project': {
+                    '_id': 0,
+                    # 'id': 1,
+                    # 'plantId': 1,
+                    # 'businessUnitId': 1,
+                    'status': 1,
+                    # 'name': 1,
+                    # 'summary': 1,
+                    # 'createdDate': 1
+                }
+            },
+           {
+                '$group': {
+                    # '_id':'$plantId', 
+                    '_id': '$status',
+                        'count':{
+                            '$sum':1
+                        }
+                }
+            }            
+            
+        ]
+    
+    workOrdersDBDocs = db.workorders.aggregate(_pipeline)
+    df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
+    # df = df.set_index('id')
+    result = {
+        'data':  json.loads(df.to_json(orient='records'))
+    }
+    return jsonify(result)
+
 @bp.route("/businessunits")
 def businessunits():
     db = dbClient["84ad9547-499c-40e3-a02e-fcf4f8714871"]
@@ -215,20 +222,21 @@ def businessunits():
                 '$project': {
                     '_id':0,
                     'id':1,
-                    'companyId':1,
+                    # 'companyId':1,
                     'name':1,
-                    'description':1,
-                    'as':1,
+                    # 'description':1,
+                    # 'as':1,
                     'plantId':1
                 }
             }
             
         ]
     
-    workOrdersDBDocs = db.businessunits.aggregate(_pipeline)
-    df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
+    businessunitsDBDocs = db.businessunits.aggregate(_pipeline)
+    df = pd.DataFrame(list(businessunitsDBDocs)).fillna(0)
     # df = df.set_index('id')
     result = {
         'data':  json.loads(df.to_json(orient='records'))
     }
     return jsonify(result)
+
