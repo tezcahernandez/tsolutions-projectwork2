@@ -45,9 +45,9 @@ def operations():
                     'op.businessUnitId.value': '$businessUnitId', 
                     'op.plantId.value': '$plantId', 
                     'op.workOrderId.value': '$workOrderId', 
-                    'op.userId.value': '$userId', 
-                    'op.userName.value': '$userName', 
-                    'op.createdDate.value': '$createdDate', 
+                   'op.userId.value': '$userId', 
+                   'op.userName.value': '$userName', 
+                   'op.createdDate.value': '$createdDate', 
                     'op.firebaseId.value': '$firebaseId'
                 }
             }, 

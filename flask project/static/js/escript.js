@@ -36,22 +36,60 @@ console.log(yValueGrafica1Ed)
       hoverinfo: 'none',
       marker: {
         color: 'rgb(158,202,225)',
-        opacity: 0.6,
+        opacity: 0.9,
         line: {
           color: 'rgb(8,48,107)',
           width: 1.5
         }
       }
     };
-    
-    var data = [trace1];
-    
-    var layout = {
+        var data = [trace1];
+        var layout = {
       title: 'Total Workoders'
-    };
-    
+    }; 
     Plotly.newPlot('eddiv', data, layout);
-        
-    
+    var trace1 = {
+      x: xValueGrafica1Ed,
+      y: yValueGrafica1Ed,
+      type: 'bar',
+      text: yValueGrafica1Ed.map(String),
+      textposition: 'auto',
+      hoverinfo: 'none',
+      marker: {
+        color: 'rgb(158,202,225)',
+        opacity: 0.9,
+        line: {
+          color: 'rgb(8,48,107)',
+          width: 1.5
+        }
+      }
+    };
+        var data = [trace1];
+        var layout = {
+      title: 'Total Workoders'
+    }; 
+    Plotly.newPlot('eddiv', data, layout);
+
+    var trace1 = {
+        x: xValueGrafica1Ed,
+        y: yValueGrafica1Ed,
+        type: 'bar',
+        text: yValueGrafica1Ed.map(String),
+        textposition: 'auto',
+        hoverinfo: 'none',
+        marker: {
+          color: 'rgb(158,202,225)',
+          opacity: 0.9,
+          line: {
+            color: 'rgb(8,48,107)',
+            width: 1.5
+          }
+        }
+      };
+          var data = [trace1];
+          var layout = {
+        title: 'Total Workoders'
+      }; 
+      Plotly.newPlot('eddiv1', data, layout);
 }
 
