@@ -4,7 +4,7 @@
 
 mscript = async (accesstoken, accesstokenidp) => {
 
-    const unit = await d3.json("/api/mroute/businessunits");
+    const unit = await d3.json("/maroute/businessunits");
     var tempmap = {};
     var names2 = [];
     for ( var j = 0; j < unit.data.length; j ++ )
@@ -25,7 +25,7 @@ mscript = async (accesstoken, accesstokenidp) => {
 }
   
 function statusWorkOrdersChart(unit) {
-  d3.json("/api/mroute/workorders/"+unit).then((data) => {  
+  d3.json("/maroute/workorders/"+unit).then((data) => {  
     var xValues = [];
     var yValues = [];
     var trace1 = [];
@@ -46,7 +46,7 @@ function statusWorkOrdersChart(unit) {
         height: 400,
         width: 400
       };
-    Plotly.newPlot('statusWOP',dataT,layout);
+    Plotly.newPlot('madiv',dataT,layout);
   });
 }
 
