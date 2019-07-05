@@ -22,10 +22,10 @@ escript = async (accesstoken, accesstokenidp) => {
          }]
      });
 
-     for (var i = 0; i < data.length; i++) {
+     for (var i = 0; i < workOrders.length; i++) {
          dataPoints.push({
-             x: data[i].plantId,
-             y: data[i].count
+             x: workOrders[i].plantId,
+             y: workOrders[i].count
          });
      }
      chart.render();
