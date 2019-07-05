@@ -121,22 +121,27 @@ def workorders():
             {
                 '$project': {
                     '_id': 0,
-                    'id': 1,
-                    'plantId': 1,
-                    'businessUnitId': 1,
-                    'status': 1,
-                    'name': 1,
-                    'summary': 1,
-                    'createdDate': 1
+                    #'id': 1,
+                    'plantId': 1
+                    #'businessUnitId': 1,
+                    #'status': 1,
+                    #'name': 1,
+                    #'summary': 1,
+                    #'createdDate': 1
                     # 'logs': 1
                 }
-            }
+            },
+            {
+               "$group":{
+                   "_id":"$plantId",
+                   "count": {"$sum":1}
+               }
+            },
             
         ]
     
     workOrdersDBDocs = db.workorders.aggregate(_pipeline)
     df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
-    df = df.set_index('id')
     result = {
         'data':  json.loads(df.to_json(orient='records'))
     }
