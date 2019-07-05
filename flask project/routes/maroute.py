@@ -141,44 +141,27 @@ def user():
     }
     return jsonify(result)
 
-@bp.route("/workorders")
-def workorders():
+@bp.route("/workorders/<unit>")
+def workorders(unit):
     db = dbClient["84ad9547-499c-40e3-a02e-fcf4f8714871"]
 
     _pipeline = [
             {
                 '$match': {
-                    # **match
-                    # "companyId"
-                    "plantId": {'$gte':'6bf5e954-e3ca-4aef-a624-cf061817e6c0'}
-                }
-            }, 
-            {
-                '$sort': {
-                    'plantId': -1
+                    "businessUnitId": {'$gte':unit}
                 }
             }, 
             {
                 '$skip': 0
             }, 
-            # {
-            #     '$limit': 50
-            # },
             {
                 '$project': {
                     '_id': 0,
-                    # 'id': 1,
-                    # 'plantId': 1,
-                    # 'businessUnitId': 1,
                     'status': 1,
-                    # 'name': 1,
-                    # 'summary': 1,
-                    # 'createdDate': 1
                 }
             },
-           {
+            {
                 '$group': {
-                    # '_id':'$plantId', 
                     '_id': '$status',
                         'count':{
                             '$sum':1
@@ -202,31 +185,13 @@ def businessunits():
 
     _pipeline = [
             {
-                '$match': {
-                    # **match
-                    # "companyId"
-                }
-            }, 
-            {
-                '$sort': {
-                    'createdDate': -1
-                }
-            }, 
-            {
                 '$skip': 0
             }, 
-            # {
-            #     '$limit': 50
-            # },
             {
                 '$project': {
                     '_id':0,
                     'id':1,
-                    # 'companyId':1,
                     'name':1,
-                    # 'description':1,
-                    # 'as':1,
-                    'plantId':1
                 }
             }
             
