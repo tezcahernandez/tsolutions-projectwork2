@@ -1,6 +1,8 @@
 import json
 import pandas as pd
 import numpy as np
+from datetime import datetime, timedelta, timezone
+
 
 from flask import Blueprint, render_template, abort
 from flask import jsonify
@@ -18,6 +20,101 @@ def show():
         print(e)
         return jsonify({ "status": False, "data": [] })
 
+def getStartDayOfWeek():
+    dt = datetime.now()
+    start = dt - timedelta(days=dt.weekday())
+    print(type(start))
+    return start
+
+
+@bp.route("/operations/weekly")
+def operationsWeekly():
+    db = dbClient["84ad9547-499c-40e3-a02e-fcf4f8714871"]
+    _pipeline = [
+            {
+                '$match': {
+                    # "createdDate":{
+                    #     # "$gte": getStartDayOfWeek()
+                    #     # "$gte": "2019-07-01T23:59:57"
+                    #     # '$gte': datetime(2019, 7, 1, 0, 0, 0, tzinfo=timezone.utc)
+                    # }                    
+                }
+            }, 
+            {
+                '$sort': {
+                    'createdDate': -1
+                }
+            }, 
+            {
+                '$skip': 0
+            }, 
+            {
+                '$limit': 10000
+            }, 
+            {
+                '$addFields': {
+                    'op.businessUnitId.value': '$businessUnitId', 
+                    'op.plantId.value': '$plantId', 
+                    'op.workOrderId.value': '$workOrderId', 
+                    'op.userId.value': '$userId', 
+                    'op.userName.value': '$userName', 
+                    'op.createdDate.value': '$createdDate', 
+                    'op.firebaseId.value': '$firebaseId'
+                }
+            }, 
+            {
+                '$project': {
+                    'op': {
+                        '$objectToArray': '$op'
+                    }
+                }
+            }, 
+            {
+                '$project': {
+                    'op': {
+                        '$map': {
+                            'input': '$op', 
+                            'as': 'x', 
+                            'in': {
+                                'k': '$$x.k', 
+                                'v': '$$x.v.value'
+                            }
+                        }
+                    }
+                }
+            }, 
+            {
+                '$project': {
+                    'op2': {
+                        '$arrayToObject': '$op'
+                    }
+                }
+            }, 
+            {
+                '$replaceRoot': {
+                    'newRoot': '$op2'
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        '$dayOfYear': '$createdDate'
+                    }, 
+                    'numOfOperations': {
+                        '$sum': 1
+                    }
+                }
+            }
+        ]
+    operationsDBDocs = db.operations.aggregate(_pipeline)
+        
+    df = pd.DataFrame(list(operationsDBDocs)).fillna(0)
+    print(df.head(5))
+    # df = df.set_index('firebaseId')
+    result = {
+        'data':  json.loads(df.to_json(orient='records'))
+    }
+    return jsonify(result)
 
 @bp.route("/operations")
 def operations():
@@ -91,8 +188,7 @@ def operations():
     df = pd.DataFrame(list(operationsDBDocs)).fillna(0)
     df = df.set_index('firebaseId')
     result = {
-        'data':  json.loads(df.to_json(orient='records')),
-        'meta_data': json.loads(df.describe().to_json())
+        'data':  json.loads(df.to_json(orient='records'))
     }
     return jsonify(result)
 
