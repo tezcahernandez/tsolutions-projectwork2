@@ -5,17 +5,21 @@ escript = async (accesstoken, accesstokenidp) => {
     const plants = await d3.json("/edroute/plants");
 
 
-    var test1 = [];
-     for (var i = 0; i < operations.data.length; i++) {
-            test1.push(operations.data[i].plantId);
+//     var test1 = [];
+//      for (var i = 0; i < operations.data.length; i++) {
+//             test1.push(operations.data[i].plantId);
 
-    }
+//     }
 
-    const result = test1.reduce((total, value) => {
-        total[value] = (total[value] || 0) + 1;
-        return total;
-   }, {});
-   console.log(result);
+//     const result = test1.reduce((total, value) => {
+//         total[value] = (total[value] || 0) + 1;
+//         return total;
+//    }, {});
+//     console.log(result)
+
+    //    const grafica1ed = result.map(it1 => {
+    //    it1.name = plants.data.find(it2 => it2._id === it1._id).name
+    //    return it1
 
 
     // const grafica1ed = workOrders.data.map(it1 => {

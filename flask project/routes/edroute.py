@@ -38,7 +38,7 @@ def operations():
                 '$skip': 0
             }, 
              {
-                 '$limit': 20000
+                 '$limit': 15000
              }, 
             {
                 '$addFields': {
