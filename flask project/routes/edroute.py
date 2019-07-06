@@ -37,17 +37,17 @@ def operations():
             {
                 '$skip': 0
             }, 
-            {
-                '$limit': 200
-            }, 
+             {
+                 '$limit': 20000
+             }, 
             {
                 '$addFields': {
-                    'op.businessUnitId.value': '$businessUnitId', 
+                    #'op.businessUnitId.value': '$businessUnitId', 
                     'op.plantId.value': '$plantId', 
-                    'op.workOrderId.value': '$workOrderId', 
-                   'op.userId.value': '$userId', 
-                   'op.userName.value': '$userName', 
-                   'op.createdDate.value': '$createdDate', 
+                    #'op.workOrderId.value': '$workOrderId', 
+                    #'op.userId.value': '$userId', 
+                    #'op.userName.value': '$userName', 
+                    #'op.createdDate.value': '$createdDate', 
                     'op.firebaseId.value': '$firebaseId'
                 }
             }, 
@@ -91,8 +91,7 @@ def operations():
     df = pd.DataFrame(list(operationsDBDocs)).fillna(0)
     df = df.set_index('firebaseId')
     result = {
-        'data':  json.loads(df.to_json(orient='records')),
-        'meta_data': json.loads(df.describe().to_json())
+        'data':  json.loads(df.to_json(orient='records'))
     }
     return jsonify(result)
 
@@ -138,7 +137,7 @@ def workorders():
                 '$sort': {
                     'count': -1
                 }
-            }, 
+            } 
         ]
     
     workOrdersDBDocs = db.workorders.aggregate(_pipeline)
@@ -225,3 +224,4 @@ def plants():
         'data':  json.loads(df.to_json(orient='records'))
     }
     return jsonify(result)
+
