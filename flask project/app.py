@@ -37,191 +37,191 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/api/0/operations")
-def operations():
+# @app.route("/api/0/operations")
+# def operations():
 
-    _pipeline = [
-            {
-                '$match': {
-                    # **match
-                    # "companyId"
-                }
-            }, 
-            {
-                '$sort': {
-                    'createdDate': -1
-                }
-            }, 
-            {
-                '$skip': 0
-            }, 
-            {
-                '$limit': 200
-            }, 
-            {
-                '$addFields': {
-                    'op.businessUnitId.value': '$businessUnitId', 
-                    'op.plantId.value': '$plantId', 
-                    'op.workOrderId.value': '$workOrderId', 
-                    'op.userId.value': '$userId', 
-                    'op.userName.value': '$userName', 
-                    'op.createdDate.value': '$createdDate', 
-                    'op.firebaseId.value': '$firebaseId'
-                }
-            }, 
-            {
-                '$project': {
-                    'op': {
-                        '$objectToArray': '$op'
-                    }
-                }
-            }, 
-            {
-                '$project': {
-                    'op': {
-                        '$map': {
-                            'input': '$op', 
-                            'as': 'x', 
-                            'in': {
-                                'k': '$$x.k', 
-                                'v': '$$x.v.value'
-                            }
-                        }
-                    }
-                }
-            }, 
-            {
-                '$project': {
-                    'op2': {
-                        '$arrayToObject': '$op'
-                    }
-                }
-            }, 
-            {
-                '$replaceRoot': {
-                    'newRoot': '$op2'
-                }
-            }
-        ]
+#     _pipeline = [
+#             {
+#                 '$match': {
+#                     # **match
+#                     # "companyId"
+#                 }
+#             }, 
+#             {
+#                 '$sort': {
+#                     'createdDate': -1
+#                 }
+#             }, 
+#             {
+#                 '$skip': 0
+#             }, 
+#             {
+#                 '$limit': 200
+#             }, 
+#             {
+#                 '$addFields': {
+#                     'op.businessUnitId.value': '$businessUnitId', 
+#                     'op.plantId.value': '$plantId', 
+#                     'op.workOrderId.value': '$workOrderId', 
+#                     'op.userId.value': '$userId', 
+#                     'op.userName.value': '$userName', 
+#                     'op.createdDate.value': '$createdDate', 
+#                     'op.firebaseId.value': '$firebaseId'
+#                 }
+#             }, 
+#             {
+#                 '$project': {
+#                     'op': {
+#                         '$objectToArray': '$op'
+#                     }
+#                 }
+#             }, 
+#             {
+#                 '$project': {
+#                     'op': {
+#                         '$map': {
+#                             'input': '$op', 
+#                             'as': 'x', 
+#                             'in': {
+#                                 'k': '$$x.k', 
+#                                 'v': '$$x.v.value'
+#                             }
+#                         }
+#                     }
+#                 }
+#             }, 
+#             {
+#                 '$project': {
+#                     'op2': {
+#                         '$arrayToObject': '$op'
+#                     }
+#                 }
+#             }, 
+#             {
+#                 '$replaceRoot': {
+#                     'newRoot': '$op2'
+#                 }
+#             }
+#         ]
 
-    operationsDBDocs = db.operations.aggregate(_pipeline)
+#     operationsDBDocs = db.operations.aggregate(_pipeline)
         
-    df = pd.DataFrame(list(operationsDBDocs)).fillna(0)
-    df = df.set_index('firebaseId')
-    result = {
-        'data':  json.loads(df.to_json(orient='records')),
-        'meta_data': json.loads(df.describe().to_json())
-    }
-    return jsonify(result)
+#     df = pd.DataFrame(list(operationsDBDocs)).fillna(0)
+#     df = df.set_index('firebaseId')
+#     result = {
+#         'data':  json.loads(df.to_json(orient='records')),
+#         'meta_data': json.loads(df.describe().to_json())
+#     }
+#     return jsonify(result)
 
-@app.route("/api/0/workorders")
-def workorders():
+# @app.route("/api/0/workorders")
+# def workorders():
 
-    _pipeline = [
-            {
-                '$match': {
-                    # **match
-                    # "companyId"
-                }
-            }, 
-            {
-                '$sort': {
-                    'createdDate': -1
-                }
-            }, 
-            {
-                '$skip': 0
-            }, 
-            {
-                '$limit': 50
-            },
-            {
-                '$project': {
-                    '_id': 0,
-                    'id': 1,
-                    'plantId': 1,
-                    'businessUnitId': 1,
-                    'status': 1,
-                    'name': 1,
-                    'summary': 1,
-                    'createdDate': 1
-                    # 'logs': 1
-                }
-            }
+#     _pipeline = [
+#             {
+#                 '$match': {
+#                     # **match
+#                     # "companyId"
+#                 }
+#             }, 
+#             {
+#                 '$sort': {
+#                     'createdDate': -1
+#                 }
+#             }, 
+#             {
+#                 '$skip': 0
+#             }, 
+#             {
+#                 '$limit': 50
+#             },
+#             {
+#                 '$project': {
+#                     '_id': 0,
+#                     'id': 1,
+#                     'plantId': 1,
+#                     'businessUnitId': 1,
+#                     'status': 1,
+#                     'name': 1,
+#                     'summary': 1,
+#                     'createdDate': 1
+#                     # 'logs': 1
+#                 }
+#             }
             
-        ]
+#         ]
 
-    workOrdersDBDocs = db.workorders.aggregate(_pipeline)
-    # for x in workOrdersDBDocs:
-        # print(x)
+#     workOrdersDBDocs = db.workorders.aggregate(_pipeline)
+#     # for x in workOrdersDBDocs:
+#         # print(x)
 
-    # df = pd.DataFrame(list(workOrdersDBDocs))
-    # print(df.head(5))
-    df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
-    df = df.set_index('id')
-    result = {
-        'data':  json.loads(df.to_json(orient='records'))
-        # 'data':  json.loads(df.to_json()),
-    }
-    return jsonify(result)
+#     # df = pd.DataFrame(list(workOrdersDBDocs))
+#     # print(df.head(5))
+#     df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
+#     df = df.set_index('id')
+#     result = {
+#         'data':  json.loads(df.to_json(orient='records'))
+#         # 'data':  json.loads(df.to_json()),
+#     }
+#     return jsonify(result)
 
 
-@app.route("/api/eroute/workorders")
-def eroute_workorders():
+# @app.route("/api/eroute/workorders")
+# def eroute_workorders():
 
-    _pipeline = [
-            {
-                '$match': {
-                    # **match
-                    # "companyId"
-                }
-            }, 
-            {
-                '$sort': {
-                    'createdDate': -1
-                }
-            }, 
-            {
-                '$skip': 0
-            }, 
-            {
-                '$limit': 50
-            },
-            {
-                '$project': {
-                    '_id': 0,
-                    # 'id': 1,
-                    'plantId': 1,
-                    # 'businessUnitId': 1,
-                    # 'status': 1,
-                    # 'name': 1
-                    # 'summary': 1,
-                    # 'createdDate': 1
-                    # 'logs': 1
-                }
-            },
+#     _pipeline = [
+#             {
+#                 '$match': {
+#                     # **match
+#                     # "companyId"
+#                 }
+#             }, 
+#             {
+#                 '$sort': {
+#                     'createdDate': -1
+#                 }
+#             }, 
+#             {
+#                 '$skip': 0
+#             }, 
+#             {
+#                 '$limit': 50
+#             },
+#             {
+#                 '$project': {
+#                     '_id': 0,
+#                     # 'id': 1,
+#                     'plantId': 1,
+#                     # 'businessUnitId': 1,
+#                     # 'status': 1,
+#                     # 'name': 1
+#                     # 'summary': 1,
+#                     # 'createdDate': 1
+#                     # 'logs': 1
+#                 }
+#             },
 
-            {
-                '$addFields': {
-                    'y': 9
-                }
-            }
+#             {
+#                 '$addFields': {
+#                     'y': 9
+#                 }
+#             }
             
-        ]
+#         ]
 
-    workOrdersDBDocs = db.workorders.aggregate(_pipeline)
-    # for x in workOrdersDBDocs:
-        # print(x)
+#     workOrdersDBDocs = db.workorders.aggregate(_pipeline)
+#     # for x in workOrdersDBDocs:
+#         # print(x)
 
-    # df = pd.DataFrame(list(workOrdersDBDocs))
-    # print(df.head(5))
-    df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
-    # df = df.set_index('id')
-    result = {
-        'data':  json.loads(df.to_json(orient='records'))
-        # 'data':  json.loads(df.to_json()),
-    }
-    return jsonify(result)
+#     # df = pd.DataFrame(list(workOrdersDBDocs))
+#     # print(df.head(5))
+#     df = pd.DataFrame(list(workOrdersDBDocs)).fillna(0)
+#     # df = df.set_index('id')
+#     result = {
+#         'data':  json.loads(df.to_json(orient='records'))
+#         # 'data':  json.loads(df.to_json()),
+#     }
+#     return jsonify(result)
 
 if __name__ == "__main__":
     app.run()

@@ -22,7 +22,8 @@ def show():
 
 def getStartDayOfWeek():
     dt = datetime.now()
-    start = dt - timedelta(days=dt.weekday())
+    # start = dt - timedelta(days=dt.weekday())
+    start = dt - timedelta(days=10)
     print(type(start))
     return start
 
@@ -36,7 +37,7 @@ def operationsWeekly():
                     # "createdDate":{
                     #     # "$gte": getStartDayOfWeek()
                     #     # "$gte": "2019-07-01T23:59:57"
-                    #     # '$gte': datetime(2019, 7, 1, 0, 0, 0, tzinfo=timezone.utc)
+                    #     # '$gte': datetime(2019, 6, 28, 0, 0, 0, tzinfo=timezone.utc)
                     # }                    
                 }
             }, 
@@ -237,7 +238,6 @@ def workorders():
         'data':  json.loads(df.to_json(orient='records'))
     }
     return jsonify(result)
-
 
 @bp.route("/users")
 def user():

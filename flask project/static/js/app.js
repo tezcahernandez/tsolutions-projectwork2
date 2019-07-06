@@ -2,16 +2,16 @@
 
 authenticationInit = async () => {
     // const authenticationUrl = `http://dev-api.andonix.com/api/v2/login/authorization`;
-    const authenticationUrl = `https://hookb.in/oXalDe2PZkUWlWL0X6Rz`;
-    // debugger;
-    const response = await axios.get(authenticationUrl, {
-        method: 'get',
-        // url: "oXalDe2PZkUWlWL0X6Rz",
-        // baseUrl: "https://hookb.in",
+    // const authenticationUrl = `https://hookb.in/oXalDe2PZkUWlWL0X6Rz`;
+    // // debugger;
+    // const response = await axios.get(authenticationUrl, {
+    //     method: 'get',
+    //     // url: "oXalDe2PZkUWlWL0X6Rz",
+    //     // baseUrl: "https://hookb.in",
 
-        // headers: { 'CUSTOM-HEADER': 'XMLHttpRequest' },
-        // responseType: 'stream'
-    });
+    //     // headers: { 'CUSTOM-HEADER': 'XMLHttpRequest' },
+    //     // responseType: 'stream'
+    // });
 
     ascript();
     escript();
