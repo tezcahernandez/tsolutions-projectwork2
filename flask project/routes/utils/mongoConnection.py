@@ -2,9 +2,7 @@ from pymongo import MongoClient
 from bson.json_util import dumps, CANONICAL_JSON_OPTIONS, RELAXED_JSON_OPTIONS 
 import json
 
-# _mongoClusterUri_ = "mongodb://dbAdmin:Vol8e3v5XLGYrwTK@cluster0-shard-00-00-0dend.mongodb.net:27017,cluster0-shard-00-01-0dend.mongodb.net:27017,cluster0-shard-00-02-0dend.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true"
-_mongoClusterUri_ = f"mongodb://admin:7YXwnKO9gSSrTc3O@dev-shard-00-00-hfody.mongodb.net:27017,dev-shard-00-01-hfody.mongodb.net:27017,dev-shard-00-02-hfody.mongodb.net:27017/test?ssl=true&replicaSet=dev-shard-0&authSource=admin"
-
+_mongoClusterUri_ = "mongodb://dbAdmin:Vol8e3v5XLGYrwTK@cluster0-shard-00-00-0dend.mongodb.net:27017,cluster0-shard-00-01-0dend.mongodb.net:27017,cluster0-shard-00-02-0dend.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true"
 
 
 dbClient = MongoClient(_mongoClusterUri_)
